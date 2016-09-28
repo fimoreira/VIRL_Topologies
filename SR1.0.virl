@@ -1,0 +1,585 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.95" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.95/virl.xsd">
+    <node name="XRv1" type="SIMPLE" subtype="IOS XRv" location="105,162">
+        <extensions><entry key="config" type="String">!! IOS XR Configuration 6.0.1
+!! Last configuration change at Sat Sep 24 17:17:52 2016 by cisco
+!
+hostname XRv1
+banner exec @
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                                                       !!!
+!!!                           D I S C L A I M E R                         !!!
+!!!                                                                       !!!
+!!!  This topology should be used for training not client demonstration   !!!
+!!!  If you find any errors please report them to fimoreir@cisco.com      !!!
+service timestamps log datetime msec
+service timestamps debug datetime msec
+telnet vrf default ipv4 server max-servers 10
+domain lookup disable
+cdp
+line template vty
+ timestamp
+ exec-timeout 720 0
+!
+line console
+ exec-timeout 0 0
+!
+line default
+ exec-timeout 720 0
+!
+vty-pool default 0 50
+alias shrate show interface | i "rate|Descr"
+control-plane
+ management-plane
+  inband
+   interface all
+    allow all
+   !
+  !
+ !
+!
+interface Loopback0
+ description Loopback
+ ipv4 address 1.1.0.1 255.255.255.255
+!
+interface GigabitEthernet0/0/0/0
+ description XRv1 to XRv2
+ cdp
+ ipv4 address 99.12.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/1
+ description XRv1 to XRv6
+ cdp
+ ipv4 address 99.16.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/2
+ description XRv1 to vPagent1
+ cdp
+ ipv4 address 99.19.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/3
+ description XRv1 to vPagent1b
+ cdp
+ ipv4 address 99.19.1.1 255.255.255.0
+ load-interval 30
+!
+router isis 1
+ is-type level-2-only
+ net 49.0010.0100.0001.00
+ lsp-mtu 1433
+ address-family ipv4 unicast
+  metric-style wide
+  segment-routing mpls
+ !
+ interface Loopback0
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 1
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+!
+end</entry></extensions><interface id="0" name="GigabitEthernet0/0/0/0"/>
+        <interface id="1" name="GigabitEthernet0/0/0/1"/>
+        <interface id="2" name="GigabitEthernet0/0/0/2"/>
+        <interface id="3" name="GigabitEthernet0/0/0/3"/>
+    </node>
+    <node name="XRv2" type="SIMPLE" subtype="IOS XRv" location="252,37">
+        <extensions><entry key="config" type="String">!! IOS XR Configuration 6.0.1
+!! Last configuration change at Sat Sep 24 17:17:51 2016 by cisco
+!
+hostname XRv2
+banner exec @
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                                                       !!!
+!!!                           D I S C L A I M E R                         !!!
+!!!                                                                       !!!
+!!!  This topology should be used for training not client demonstration   !!!
+!!!  If you find any errors please report them to fimoreir@cisco.com      !!!
+service timestamps log datetime msec
+service timestamps debug datetime msec
+telnet vrf default ipv4 server max-servers 10
+domain lookup disable
+cdp
+line template vty
+ timestamp
+ exec-timeout 720 0
+!
+line console
+ exec-timeout 0 0
+!
+line default
+ exec-timeout 720 0
+!
+vty-pool default 0 50
+alias shrate show interface | i "rate|Descr"
+control-plane
+ management-plane
+  inband
+   interface all
+    allow all
+   !
+  !
+ !
+!
+interface Loopback0
+ description Loopback
+ ipv4 address 1.1.0.2 255.255.255.255
+!
+interface Loopback100
+ description Anycast Loopback
+ ipv4 address 100.1.1.1 255.255.255.255
+!
+interface GigabitEthernet0/0/0/0
+ description XRv2 to XRv3
+ cdp
+ ipv4 address 99.23.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/1
+ description XRv2 to XRv6
+ cdp
+ ipv4 address 99.26.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/2
+ description XRv2 to XRv5
+ cdp
+ ipv4 address 99.25.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/3
+ description XRv2 to XRv1
+ cdp
+ ipv4 address 99.12.0.2 255.255.255.0
+ load-interval 30
+!
+router isis 1
+ is-type level-2-only
+ net 49.0010.0100.0002.00
+ lsp-mtu 1433
+ address-family ipv4 unicast
+  metric-style wide
+  segment-routing mpls
+ !
+ interface Loopback0
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 1
+  !
+ !
+ interface Loopback100
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 1001
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  point-to-point
+  address-family ipv4 unicast
+   metric 15
+  !
+ !
+ interface GigabitEthernet0/0/0/3
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+!
+end</entry></extensions><interface id="0" name="GigabitEthernet0/0/0/0"/>
+        <interface id="1" name="GigabitEthernet0/0/0/1"/>
+        <interface id="2" name="GigabitEthernet0/0/0/2"/>
+        <interface id="3" name="GigabitEthernet0/0/0/3"/>
+    </node>
+    <node name="XRv3" type="SIMPLE" subtype="IOS XRv" location="499,37">
+        <extensions><entry key="config" type="String">!! IOS XR Configuration 6.0.1
+!! Last configuration change at Sat Sep 24 17:17:51 2016 by cisco
+!
+hostname XRv3
+banner exec @
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                                                       !!!
+!!!                           D I S C L A I M E R                         !!!
+!!!                                                                       !!!
+!!!  This topology should be used for training not client demonstration   !!!
+!!!  If you find any errors please report them to fimoreir@cisco.com      !!!
+service timestamps log datetime msec
+service timestamps debug datetime msec
+telnet vrf default ipv4 server max-servers 10
+domain lookup disable
+cdp
+line template vty
+ timestamp
+ exec-timeout 720 0
+!
+line console
+ exec-timeout 0 0
+!
+line default
+ exec-timeout 720 0
+!
+vty-pool default 0 50
+alias shrate show interface | i "rate|Descr"
+control-plane
+ management-plane
+  inband
+   interface all
+    allow all
+   !
+  !
+ !
+!
+interface Loopback0
+ description Loopback
+ ipv4 address 1.1.0.3 255.255.255.255
+!
+interface Loopback100
+ description Anycast Loopback
+ ipv4 address 100.1.1.1 255.255.255.255
+!
+interface GigabitEthernet0/0/0/0
+ description XRv3 to XRv2
+ cdp
+ ipv4 address 99.23.0.2 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/1
+ description XRv3 to XRv5
+ cdp
+ ipv4 address 99.35.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/2
+ description XRv3 to XRv4
+ cdp
+ ipv4 address 99.34.0.1 255.255.255.0
+ load-interval 30
+!
+router isis 1
+ is-type level-2-only
+ net 49.0010.0100.0003.00
+ lsp-mtu 1433
+ address-family ipv4 unicast
+  metric-style wide
+  segment-routing mpls
+ !
+ interface Loopback0
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 3
+  !
+ !
+ interface Loopback100
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 1001
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+!
+end</entry></extensions><interface id="0" name="GigabitEthernet0/0/0/0"/>
+        <interface id="1" name="GigabitEthernet0/0/0/1"/>
+        <interface id="2" name="GigabitEthernet0/0/0/2"/>
+    </node>
+    <node name="XRv4" type="SIMPLE" subtype="IOS XRv" location="705,131">
+        <extensions><entry key="config" type="String">!! IOS XR Configuration 6.0.1
+!! Last configuration change at Sat Sep 24 17:17:52 2016 by cisco
+!
+hostname XRv4
+banner exec @
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                                                       !!!
+!!!                           D I S C L A I M E R                         !!!
+!!!                                                                       !!!
+!!!  This topology should be used for training not client demonstration   !!!
+!!!  If you find any errors please report them to fimoreir@cisco.com      !!!
+service timestamps log datetime msec
+service timestamps debug datetime msec
+telnet vrf default ipv4 server max-servers 10
+domain lookup disable
+cdp
+line template vty
+ timestamp
+ exec-timeout 720 0
+!
+line console
+ exec-timeout 0 0
+!
+line default
+ exec-timeout 720 0
+!
+vty-pool default 0 50
+alias shrate show interface | i "rate|Descr"
+control-plane
+ management-plane
+  inband
+   interface all
+    allow all
+   !
+  !
+ !
+!
+interface Loopback0
+ description Loopback
+ ipv4 address 1.1.0.4 255.255.255.255
+!
+interface GigabitEthernet0/0/0/0
+ description XRv4 to XRv5
+ cdp
+ ipv4 address 99.45.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/1
+ description XRv4 to XRv3
+ cdp
+ ipv4 address 99.34.0.2 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/2
+ description XRv4 to vPagent2
+ cdp
+ ipv4 address 99.49.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/3
+ description XRv4 to vPagent2b
+ cdp
+ ipv4 address 99.49.1.1 255.255.255.0
+ load-interval 30
+!
+router isis 1
+ is-type level-2-only
+ net 49.0010.0100.0004.00
+ lsp-mtu 1433
+ address-family ipv4 unicast
+  metric-style wide
+  segment-routing mpls
+ !
+ interface Loopback0
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 4
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+!
+end</entry></extensions><interface id="0" name="GigabitEthernet0/0/0/0"/>
+        <interface id="1" name="GigabitEthernet0/0/0/1"/>
+        <interface id="2" name="GigabitEthernet0/0/0/2"/>
+        <interface id="3" name="GigabitEthernet0/0/0/3"/>
+    </node>
+    <node name="XRv5" type="SIMPLE" subtype="IOS XRv" location="510,284">
+        <extensions><entry key="config" type="String">!! IOS XR Configuration 6.0.1
+!! Last configuration change at Sat Sep 24 17:17:51 2016 by cisco
+!
+hostname XRv5
+banner exec @
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!                                                                       !!!
+!!!                           D I S C L A I M E R                         !!!
+!!!                                                                       !!!
+!!!  This topology should be used for training not client demonstration   !!!
+!!!  If you find any errors please report them to fimoreir@cisco.com      !!!
+service timestamps log datetime msec
+service timestamps debug datetime msec
+telnet vrf default ipv4 server max-servers 10
+domain lookup disable
+cdp
+line template vty
+ timestamp
+ exec-timeout 720 0
+!
+line console
+ exec-timeout 0 0
+!
+line default
+ exec-timeout 720 0
+!
+vty-pool default 0 50
+alias shrate show interface | i "rate|Descr"
+control-plane
+ management-plane
+  inband
+   interface all
+    allow all
+   !
+  !
+ !
+!
+interface Loopback0
+ description Loopback
+ ipv4 address 1.1.0.5 255.255.255.255
+!
+interface Loopback100
+ description Anycast Loopback
+ ipv4 address 100.2.2.2 255.255.255.255
+!
+interface GigabitEthernet0/0/0/0
+ description XRv5 to XRv2
+ cdp
+ ipv4 address 99.25.0.2 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/1
+ description XRv5 to XRv3
+ cdp
+ ipv4 address 99.35.0.2 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/2
+ description XRv5 to XRv6
+ cdp
+ ipv4 address 99.56.0.1 255.255.255.0
+ load-interval 30
+!
+interface GigabitEthernet0/0/0/3
+ description XRv5 to XRv4
+ cdp
+ ipv4 address 99.45.0.2 255.255.255.0
+ load-interval 30
+!
+router isis 1
+ is-type level-2-only
+ net 49.0010.0100.0005.00
+ lsp-mtu 1433
+ address-family ipv4 unicast
+  metric-style wide
+  segment-routing mpls
+ !
+ interface Loopback0
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 5
+  !
+ !
+ interface Loopback100
+  passive
+  address-family ipv4 unicast
+   prefix-sid index 1002
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  point-to-point
+  address-family ipv4 unicast
+   metric 15
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+ interface GigabitEthernet0/0/0/3
+  point-to-point
+  address-family ipv4 unicast
+   metric 10
+  !
+ !
+!
+end</entry></extensions><interface id="0" name="GigabitEthernet0/0/0/0"/>
+        <interface id="1" name="GigabitEthernet0/0/0/1"/>
+        <interface id="2" name="GigabitEthernet0/0/0/2"/>
+        <interface id="3" name="GigabitEthernet0/0/0/3"/>
+    </node>
+    <node name="XRv6" type="SIMPLE" subtype="IOS XRv" location="258,285">
+        <interface id="0" name="GigabitEthernet0/0/0/0"/>
+        <interface id="1" name="GigabitEthernet0/0/0/1"/>
+        <interface id="2" name="GigabitEthernet0/0/0/2"/>
+    </node>
+    <node name="vPagent1" type="SIMPLE" subtype="IOSv" location="36,25" vmImage="vpagent">
+        <interface id="0" name="GigabitEthernet0/1"/>
+        <interface id="1" name="GigabitEthernet0/2"/>
+    </node>
+    <node name="vPagent2" type="SIMPLE" subtype="IOSv" location="711,349" vmImage="vpagent">
+        <interface id="0" name="GigabitEthernet0/1"/>
+        <interface id="1" name="GigabitEthernet0/2"/>
+    </node>
+    <annotations/>
+    <connection dst="/virl:topology/virl:node[7]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[8]/virl:interface[1]" src="/virl:topology/virl:node[4]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[2]" src="/virl:topology/virl:node[6]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[2]" src="/virl:topology/virl:node[6]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[1]" src="/virl:topology/virl:node[2]/virl:interface[4]"/>
+    <connection dst="/virl:topology/virl:node[3]/virl:interface[1]" src="/virl:topology/virl:node[2]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[4]/virl:interface[2]" src="/virl:topology/virl:node[3]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[5]/virl:interface[1]" src="/virl:topology/virl:node[2]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[3]/virl:interface[2]" src="/virl:topology/virl:node[5]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[6]/virl:interface[2]" src="/virl:topology/virl:node[5]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[4]/virl:interface[1]" src="/virl:topology/virl:node[5]/virl:interface[4]"/>
+    <connection dst="/virl:topology/virl:node[8]/virl:interface[2]" src="/virl:topology/virl:node[4]/virl:interface[4]"/>
+    <connection dst="/virl:topology/virl:node[7]/virl:interface[2]" src="/virl:topology/virl:node[1]/virl:interface[4]"/>
+</topology>
